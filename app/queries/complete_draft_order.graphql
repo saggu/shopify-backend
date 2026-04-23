@@ -1,0 +1,18 @@
+# Converts a draft order into a real order.
+# This triggers Shopify's post-order automations (confirmation emails, fulfilment flows).
+# The completed order.name (e.g. "#1001") is shown to the staff on the confirmation screen.
+mutation CompleteDraftOrder($id: ID!) {
+  draftOrderComplete(id: $id) {
+    draftOrder {
+      name
+      order {
+        id
+        name
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

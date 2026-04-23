@@ -1,0 +1,32 @@
+# Looks up a discount code and returns its type and value.
+# Uses inline fragments because codeDiscount is a union type — a discount can be
+# a basic code (percentage or fixed amount) or a free shipping code.
+# The status field is checked by the caller; only ACTIVE codes are applied.
+query DiscountByCode($code: String!) {
+  codeDiscountNodeByCode(code: $code) {
+    codeDiscount {
+      ... on DiscountCodeBasic {
+        status
+        customerGets {
+          value {
+            ... on DiscountPercentage {
+              # Shopify returns a decimal (0.1 = 10%). The caller multiplies by 100
+              # because DraftOrderAppliedDiscountInput.value expects 0–100.
+              percentage
+            }
+            ... on DiscountAmount {
+              amount {
+                amount
+              }
+            }
+          }
+        }
+      }
+      ... on DiscountCodeFreeShipping {
+        # No customerGets — free shipping codes zero out the shipping line on submit
+        # rather than applying an order-level discount.
+        status
+      }
+    }
+  }
+}

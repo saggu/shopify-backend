@@ -1,0 +1,20 @@
+# Searches variants by SKU using the "sku:" field prefix.
+# Reaches up to the parent product to retrieve the product name for display,
+# since variant nodes do not carry the product title directly.
+query SearchVariants($query: String!) {
+  productVariants(first: 50, query: $query) {
+    edges {
+      node {
+        id
+        title
+        sku
+        price
+        inventoryQuantity
+        product {
+          id
+          title
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+# Calculates a full pricing breakdown for a draft order without persisting anything.
+# This is a mutation (not a query) because Shopify classifies server-side calculations
+# as mutations, even though no data is written.
+# availableShippingRates returns real shipping options for the given address — the
+# handle returned here must be stored and used when submitting the final order.
+mutation CalculateDraftOrder($input: DraftOrderInput!) {
+  draftOrderCalculate(input: $input) {
+    calculatedDraftOrder {
+      lineItems {
+        title
+        variantTitle
+        variant {
+          id
+        }
+        quantity
+        originalUnitPrice {
+          amount
+        }
+        # Line total after any line-level discounts have been applied
+        discountedTotal {
+          amount
+        }
+      }
+      subtotalPrice
+      totalTax
+      totalPrice
+      totalDiscountsSet {
+        shopMoney {
+          amount
+        }
+      }
+      taxLines {
+        title
+        ratePercentage
+        price
+      }
+      appliedDiscount {
+        title
+        amountV2 {
+          amount
+        }
+      }
+      availableShippingRates {
+        handle
+        title
+        price {
+          amount
+        }
+      }
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

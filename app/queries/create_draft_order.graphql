@@ -1,0 +1,15 @@
+# Persists the order as a draft in Shopify.
+# The draft is not yet a real order — it exists in the admin but has not been invoiced.
+# The returned draft ID (GID) is passed directly to completeDraftOrder.
+mutation CreateDraftOrder($input: DraftOrderInput!) {
+  draftOrderCreate(input: $input) {
+    draftOrder {
+      id
+      name
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}

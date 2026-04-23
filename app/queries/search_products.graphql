@@ -1,0 +1,25 @@
+# Searches the product catalog by product title and product type.
+# The caller is responsible for scoping the query string using field prefixes,
+# e.g. "title:snow* OR product_type:snow*", to avoid matching on vendor or tags.
+# Returns all variants nested under each matching product.
+query SearchProducts($query: String!) {
+  products(first: 50, query: $query) {
+    edges {
+      node {
+        id
+        title
+        variants(first: 50) {
+          edges {
+            node {
+              id
+              title
+              sku
+              price
+              inventoryQuantity
+            }
+          }
+        }
+      }
+    }
+  }
+}
